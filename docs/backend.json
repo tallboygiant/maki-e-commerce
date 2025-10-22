@@ -76,6 +76,10 @@
         "phone": {
           "type": "string",
           "description": "Phone number of the user."
+        },
+        "isAdmin": {
+            "type": "boolean",
+            "description": "Flag to indicate if the user is an administrator."
         }
       },
       "required": [
@@ -84,7 +88,8 @@
         "lastName",
         "email",
         "address",
-        "phone"
+        "phone",
+        "isAdmin"
       ]
     },
     "Order": {
@@ -301,24 +306,10 @@
             }
           ]
         }
-      },
-      {
-        "path": "/admins/{userId}",
-        "definition": {
-          "entityName": "User",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Marks a user as an admin. Existence in this collection grants admin privileges.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "Unique identifier for the admin user."
-            }
-          ]
-        }
       }
     ],
-    "reasoning": "This Firestore structure is designed for the MAKI e-commerce application, prioritizing security, scalability, and maintainability. It includes separate collections for products, users, orders, order items and shop locations. An `admin` collection is used to securely manage administrative access.\n\n**Authorization Independence:** The design avoids hierarchical authorization dependencies by using path-based ownership for user-related data and global admin roles. This eliminates the need for `get()` calls in security rules, enabling atomic operations and improving security.\n\n**Structural Segregation:** The application uses structural segregation to maintain homogeneous security postures within collections. Products are stored in a single `/products` collection, accessible by all users for read operations, but only modifiable by authenticated admins. User data is stored under `/users/{userId}`, providing private, path-based ownership.\n\n**Access Modeling:**\n*   **Private User Data:** User profiles are stored under `/users/{userId}`, enforcing strict ownership.\n*   **Admin Access:** Admin privileges are managed through the `/admins/{uid}` collection. An admin user being present in that collection can then be used to grant admin privileges through the Firestore security rules.\n\n**QAPs (Rules are not Filters):** The structure supports secure `list` operations:\n*   Publicly available products can be listed without filtering based on user roles.\n*   Admin roles are checked against an admin collection to prevent unauthorized modifications.\n*   User specific order data is stored under the `/users/{userId}/orders` path, which helps to prevent unauthorized access to other user's orders.\n\n**Invariants:** The structure supports the integrity of ownership, timestamps, and denormalized data. For example, User to Orders ownership is secured through the path structure `/users/{userId}/orders/{orderId}`."
+    "reasoning": "This Firestore structure is designed for the MAKI e-commerce application, prioritizing security, scalability, and maintainability. It includes separate collections for products, users, orders, order items and shop locations. Admin privileges are stored as a boolean field `isAdmin` on the user document itself, simplifying security rules.\n\n**Authorization Independence:** The design avoids hierarchical authorization dependencies by using path-based ownership for user-related data and global admin roles. This eliminates the need for `get()` calls in security rules, enabling atomic operations and improving security.\n\n**Structural Segregation:** The application uses structural segregation to maintain homogeneous security postures within collections. Products are stored in a single `/products` collection, accessible by all users for read operations, but only modifiable by authenticated admins. User data is stored under `/users/{userId}`, providing private, path-based ownership.\n\n**Access Modeling:**\n*   **Private User Data:** User profiles are stored under `/users/{userId}`, enforcing strict ownership.\n*   **Admin Access:** Admin privileges are managed through the `isAdmin` boolean field on each user's document in the `/users/{userId}` collection. This allows security rules to check the flag on the user's own document for authorization.\n\n**QAPs (Rules are not Filters):** The structure supports secure `list` operations:\n*   Publicly available products can be listed without filtering based on user roles.\n*   Admin roles are checked on the user document to prevent unauthorized modifications.\n*   User specific order data is stored under the `/users/{userId}/orders` path, which helps to prevent unauthorized access to other user's orders.\n\n**Invariants:** The structure supports the integrity of ownership, timestamps, and denormalized data. For example, User to Orders ownership is secured through the path structure `/users/{userId}/orders/{orderId}`."
   }
 }
+
+    

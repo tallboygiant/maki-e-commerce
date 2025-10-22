@@ -12,16 +12,16 @@ export default function AdminPage() {
   const firestore = useFirestore();
   const router = useRouter();
 
-  const adminCheckRef = useMemoFirebase(() => {
+  const userProfileRef = useMemoFirebase(() => {
     if (!firestore || !user) return null;
-    return doc(firestore, 'admins', user.uid);
+    return doc(firestore, 'users', user.uid);
   }, [firestore, user]);
 
-  const { data: adminDoc, isLoading: isAdminLoading } = useDoc(adminCheckRef);
+  const { data: userProfile, isLoading: isProfileLoading } = useDoc<{isAdmin?: boolean}>(userProfileRef);
 
   const isAdmin = useMemo(() => {
-    return adminDoc?.exists() ?? false;
-  }, [adminDoc]);
+    return userProfile?.isAdmin === true;
+  }, [userProfile]);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -29,7 +29,7 @@ export default function AdminPage() {
     }
   }, [isUserLoading, user, router]);
 
-  if (isUserLoading || (user && isAdminLoading)) {
+  if (isUserLoading || (user && isProfileLoading)) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -48,3 +48,5 @@ export default function AdminPage() {
 
   return <AdminDashboard />;
 }
+
+    
