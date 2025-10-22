@@ -21,12 +21,12 @@ export function ProductCard({ product }: ProductCardProps) {
         <Link href={`/products/${product.id}`} className="block">
           <div className="aspect-[3/2] relative w-full">
             <Image
-              src={product.image}
+              src={product.imageUrl}
               alt={product.name}
               fill
               className="object-cover"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-              data-ai-hint={product.imageHint}
+              data-ai-hint={product.imageHint || product.name}
             />
           </div>
         </Link>

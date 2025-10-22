@@ -1,24 +1,50 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Construction } from "lucide-react";
+'use client';
+
+import { useMemo } from 'react';
+import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useRouter } from 'next/navigation';
+import { collection } from 'firebase/firestore';
+import { AdminDashboard } from '@/components/admin/admin-dashboard';
+import { Loader2 } from 'lucide-react';
 
 export default function AdminPage() {
-  return (
-    <div className="container mx-auto px-4 py-12">
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline text-3xl">Panneau d'Administration</CardTitle>
-          <CardDescription>
-            Gérez vos produits, commandes et informations sur le site.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center text-center py-24">
-            <Construction className="h-24 w-24 text-primary" />
-            <h2 className="mt-8 text-2xl font-bold">Page en construction</h2>
-            <p className="mt-2 text-muted-foreground">
-                Cette section est en cours de développement et sera bientôt disponible.
-            </p>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  const { user, isUserLoading } = useUser();
+  const firestore = useFirestore();
+  const router = useRouter();
+
+  const adminCheckQuery = useMemoFirebase(() => {
+    if (!firestore || !user) return null;
+    return collection(firestore, 'admins');
+  }, [firestore, user]);
+
+  const { data: admins, isLoading: isAdminLoading } = useCollection(adminCheckQuery);
+
+  const isAdmin = useMemo(() => {
+    if (!admins || !user) return false;
+    return admins.some(admin => admin.id === user.uid);
+  }, [admins, user]);
+
+  if (isUserLoading || isAdminLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    router.replace('/login');
+    return null;
+  }
+  
+  if (!isAdmin) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <h1 className="text-3xl font-bold text-destructive">Accès non autorisé</h1>
+        <p className="mt-4 text-muted-foreground">Vous n'avez pas les permissions nécessaires pour accéder à cette page.</p>
+      </div>
+    );
+  }
+
+  return <AdminDashboard />;
 }

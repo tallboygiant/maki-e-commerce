@@ -1,13 +1,20 @@
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-
 import { Button } from '@/components/ui/button';
-import { products } from '@/lib/products';
 import { ProductCard } from '@/components/product-card';
 import placeholderData from '@/lib/placeholder-images.json';
+import { useCollection, useFirestore } from '@/firebase';
+import { collection } from 'firebase/firestore';
+import { Product } from '@/lib/products';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function Home() {
-  const featuredProducts = products.slice(0, 3);
+  const firestore = useFirestore();
+  const productsQuery = useMemoFirebase(() => collection(firestore, 'products'), [firestore]);
+  const { data: products, isLoading } = useCollection<Product>(productsQuery);
+
+  const featuredProducts = products?.slice(0, 3) || [];
   const heroImage = placeholderData.placeholderImages.find(p => p.id === 'hero-image');
 
   return (
@@ -39,9 +46,21 @@ export default function Home() {
       <section className="container mx-auto px-4">
         <h2 className="text-3xl font-headline font-bold text-center mb-8">Nos Produits Vedettes</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="flex flex-col space-y-3">
+                <Skeleton className="h-[250px] w-full rounded-xl" />
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-[250px]" />
+                  <Skeleton className="h-4 w-[200px]" />
+                </div>
+              </div>
+            ))
+          ) : (
+            featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          )}
         </div>
         <div className="text-center mt-12">
             <Button asChild variant="outline">
