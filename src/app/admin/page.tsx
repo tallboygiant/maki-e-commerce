@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { useRouter } from 'next/navigation';
 import { collection } from 'firebase/firestore';
@@ -24,17 +24,18 @@ export default function AdminPage() {
     return admins.some(admin => admin.id === user.uid);
   }, [admins, user]);
 
-  if (isUserLoading || isAdminLoading) {
+  useEffect(() => {
+    if (!isUserLoading && !user) {
+      router.replace('/login');
+    }
+  }, [isUserLoading, user, router]);
+
+  if (isUserLoading || isAdminLoading || !user) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
       </div>
     );
-  }
-
-  if (!user) {
-    router.replace('/login');
-    return null;
   }
   
   if (!isAdmin) {
