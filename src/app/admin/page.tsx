@@ -1,9 +1,9 @@
 'use client';
 
 import { useMemo, useEffect } from 'react';
-import { useUser, useFirestore, useCollection, useMemoFirebase } from '@/firebase';
+import { useUser, useFirestore, useDoc, useMemoFirebase } from '@/firebase';
 import { useRouter } from 'next/navigation';
-import { collection } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { AdminDashboard } from '@/components/admin/admin-dashboard';
 import { Loader2 } from 'lucide-react';
 
@@ -12,17 +12,16 @@ export default function AdminPage() {
   const firestore = useFirestore();
   const router = useRouter();
 
-  const adminCheckQuery = useMemoFirebase(() => {
+  const adminCheckRef = useMemoFirebase(() => {
     if (!firestore || !user) return null;
-    return collection(firestore, 'admins');
+    return doc(firestore, 'admins', user.uid);
   }, [firestore, user]);
 
-  const { data: admins, isLoading: isAdminLoading } = useCollection(adminCheckQuery);
+  const { data: adminDoc, isLoading: isAdminLoading } = useDoc(adminCheckRef);
 
   const isAdmin = useMemo(() => {
-    if (!admins || !user) return false;
-    return admins.some(admin => admin.id === user.uid);
-  }, [admins, user]);
+    return adminDoc?.exists() ?? false;
+  }, [adminDoc]);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -30,7 +29,7 @@ export default function AdminPage() {
     }
   }, [isUserLoading, user, router]);
 
-  if (isUserLoading || isAdminLoading || !user) {
+  if (isUserLoading || (user && isAdminLoading)) {
     return (
       <div className="flex justify-center items-center h-screen">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
