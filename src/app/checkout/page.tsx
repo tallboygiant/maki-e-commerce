@@ -14,6 +14,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useEffect } from "react";
 
 const checkoutSchema = z.object({
   email: z.string().email({ message: "Veuillez entrer une adresse email valide." }),
@@ -44,8 +45,13 @@ export default function CheckoutPage() {
     }
   });
 
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      router.push('/');
+    }
+  }, [cartItems, router]);
+
   if (cartItems.length === 0) {
-    router.push('/');
     return null;
   }
 
