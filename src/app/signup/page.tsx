@@ -18,6 +18,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useAuth, useUser, initiateEmailSignUp } from '@/firebase';
 import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { FirebaseError } from 'firebase/app';
 
 const signupSchema = z.object({
   firstName: z.string().min(1, { message: "Le prénom est requis." }),
@@ -43,13 +44,32 @@ export default function SignupPage() {
     }
   }, [user, router]);
 
-  const onSubmit = (data: z.infer<typeof signupSchema>) => {
-    initiateEmailSignUp(auth, data.email, data.password);
-    // Here you could also save firstName and lastName to Firestore user profile
-    toast({
-        title: "Création du compte en cours...",
-        description: "Veuillez patienter.",
-    });
+  const onSubmit = async (data: z.infer<typeof signupSchema>) => {
+    try {
+      await initiateEmailSignUp(auth, data.email, data.password);
+      // Here you could also save firstName and lastName to Firestore user profile
+      toast({
+          title: "Compte créé",
+          description: "Votre compte a été créé avec succès. Vous allez être connecté.",
+      });
+    } catch (error) {
+       if (error instanceof FirebaseError) {
+            if (error.code === 'auth/email-already-in-use') {
+                toast({
+                    variant: 'destructive',
+                    title: 'Erreur d\'inscription',
+                    description: 'Cette adresse email est déjà utilisée.',
+                });
+            } else {
+                 toast({
+                    variant: 'destructive',
+                    title: 'Erreur d\'inscription',
+                    description: "Une erreur inattendue s'est produite.",
+                });
+            }
+       }
+       form.reset();
+    }
   };
 
   return (
@@ -118,8 +138,8 @@ export default function SignupPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full">
-                Créer un compte
+              <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Création...' : 'Créer un compte'}
               </Button>
             </form>
           </Form>
