@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { useAuth, useUser, initiateEmailSignUp } from '@/firebase';
+import { useAuth, useUser, initiateEmailSignUpAndCreateUser, useFirestore } from '@/firebase';
 import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { FirebaseError } from 'firebase/app';
@@ -29,6 +29,7 @@ const signupSchema = z.object({
 
 export default function SignupPage() {
   const auth = useAuth();
+  const firestore = useFirestore();
   const { user } = useUser();
   const router = useRouter();
   const { toast } = useToast();
@@ -46,8 +47,10 @@ export default function SignupPage() {
 
   const onSubmit = async (data: z.infer<typeof signupSchema>) => {
     try {
-      await initiateEmailSignUp(auth, data.email, data.password);
-      // Here you could also save firstName and lastName to Firestore user profile
+      await initiateEmailSignUpAndCreateUser(auth, firestore, data.email, data.password, {
+        firstName: data.firstName,
+        lastName: data.lastName,
+      });
       toast({
           title: "Compte créé",
           description: "Votre compte a été créé avec succès. Vous allez être connecté.",
