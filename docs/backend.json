@@ -219,7 +219,7 @@
           "schema": {
             "$ref": "#/backend/entities/Product"
           },
-          "description": "Stores product information. Public read access for all users. Only admin users can create, update, and delete products.",
+          "description": "Stores product information. Public read access for all users. Only admin users can create, update, and delete products. This will fix it.",
           "params": [
             {
               "name": "productId",
