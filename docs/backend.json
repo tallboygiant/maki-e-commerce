@@ -78,8 +78,8 @@
           "description": "Phone number of the user."
         },
         "isAdmin": {
-            "type": "boolean",
-            "description": "Flag to indicate if the user is an administrator."
+          "type": "boolean",
+          "description": "Flag to indicate if the user is an administrator."
         }
       },
       "required": [
@@ -87,8 +87,6 @@
         "firstName",
         "lastName",
         "email",
-        "address",
-        "phone",
         "isAdmin"
       ]
     },
@@ -238,7 +236,7 @@
           "schema": {
             "$ref": "#/backend/entities/User"
           },
-          "description": "Stores user profile information. The authenticated user can read and write their own data. No other user can read or write this data. This is a rule enforcement trigger.",
+          "description": "Stores user profile information. The authenticated user can read and write their own data. No other user can read or write this data. This is a rule enforcement trigger. This rule should be `allow read, write: if request.auth.uid == userId;`",
           "params": [
             {
               "name": "userId",
