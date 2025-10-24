@@ -86,8 +86,7 @@
         "id",
         "firstName",
         "lastName",
-        "email",
-        "isAdmin"
+        "email"
       ]
     },
     "Order": {
@@ -220,7 +219,7 @@
           "schema": {
             "$ref": "#/backend/entities/Product"
           },
-          "description": "Stores product information. Admin users can create, read, update, and delete products. Public read access.",
+          "description": "Stores product information. Public read access. Admin users can create, update, and delete products.",
           "params": [
             {
               "name": "productId",
