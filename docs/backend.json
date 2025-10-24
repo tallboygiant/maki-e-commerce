@@ -219,7 +219,7 @@
           "schema": {
             "$ref": "#/backend/entities/Product"
           },
-          "description": "Stores product information. Public read access. Admin users can create, update, and delete products.",
+          "description": "Stores product information. Public read access for all users. Only admin users can create, update, and delete products.",
           "params": [
             {
               "name": "productId",
@@ -235,7 +235,7 @@
           "schema": {
             "$ref": "#/backend/entities/User"
           },
-          "description": "Stores user profile information. Users can read and write their own data. This means the security rule is 'allow read, write: if request.auth.uid == userId;'. This should be enough.",
+          "description": "Stores user profile information. Users can read and write their own data. The security rule is 'allow read, write: if request.auth.uid == userId;'. This should be enough to fix it.",
           "params": [
             {
               "name": "userId",
