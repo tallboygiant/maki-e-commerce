@@ -1,7 +1,7 @@
 
 'use client';
 
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { AddToCartForm } from '@/components/add-to-cart-form';
 import { Product } from '@/lib/products';
@@ -9,24 +9,20 @@ import { staticProducts } from '@/lib/products-data';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useEffect, useState } from 'react';
 
-type ProductPageProps = {
-  params: {
-    id: string;
-  };
-};
-
-export default function ProductPage({ params }: ProductPageProps) {
+export default function ProductPage() {
+  const params = useParams();
   const [product, setProduct] = useState<Product | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
   useEffect(() => {
     // Simulating a data fetch
     setTimeout(() => {
-      const foundProduct = staticProducts.find(p => p.id === params.id);
+      const foundProduct = staticProducts.find(p => p.id === id);
       setProduct(foundProduct);
       setIsLoading(false);
     }, 500);
-  }, [params.id]);
+  }, [id]);
 
 
   if (isLoading) {

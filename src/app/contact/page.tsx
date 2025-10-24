@@ -50,7 +50,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">Adresse</h3>
-                    <p className="text-muted-foreground">123 Avenue de la République, Goma, RDC</p>
+                    <p className="text-muted-foreground">123 Avenue Patrice LUMUMBA, BUKAVU, RDC</p>
                 </div>
             </div>
              <div className="flex items-start gap-4">
@@ -59,7 +59,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">Téléphone</h3>
-                    <p className="text-muted-foreground">+243 970 000 000</p>
+        
+                    <p className="text-muted-foreground">+243 998631553/997651670</p>
                 </div>
             </div>
              <div className="flex items-start gap-4">
@@ -68,7 +69,7 @@ export default function ContactPage() {
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg">Email</h3>
-                    <p className="text-muted-foreground">contact@maki-ecommerce.com</p>
+                    <p className="text-muted-foreground">Makibukavu@yahoo.com</p>
                 </div>
             </div>
         </div>
