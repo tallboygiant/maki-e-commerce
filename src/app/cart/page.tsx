@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -37,7 +38,7 @@ export default function CartPage() {
                   <div key={item.id}>
                     <div className="flex items-center gap-4 p-4">
                       <Image
-                        src={item.image}
+                        src={item.imageUrl}
                         alt={item.name}
                         width={100}
                         height={100}
