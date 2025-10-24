@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect } from 'react';
@@ -17,9 +18,6 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Product } from '@/lib/products';
-import { useFirestore, addDocumentNonBlocking, updateDocumentNonBlocking } from '@/firebase';
-import { collection, doc } from 'firebase/firestore';
-import { useToast } from '@/hooks/use-toast';
 
 const productSchema = z.object({
   name: z.string().min(1, 'Le nom est requis.'),
@@ -36,12 +34,10 @@ interface ProductDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   product: Product | null;
+  onSave: (data: Product) => void;
 }
 
-export function ProductDialog({ isOpen, setIsOpen, product }: ProductDialogProps) {
-  const firestore = useFirestore();
-  const { toast } = useToast();
-
+export function ProductDialog({ isOpen, setIsOpen, product, onSave }: ProductDialogProps) {
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -63,31 +59,14 @@ export function ProductDialog({ isOpen, setIsOpen, product }: ProductDialogProps
         description: '',
         price: 0,
         stockQuantity: 0,
-        imageUrl: '',
+        imageUrl: 'https://picsum.photos/seed/picsum/400/400',
         imageHint: ''
       });
     }
   }, [product, form, isOpen]);
 
   const onSubmit = (data: ProductFormData) => {
-    if (product) {
-      // Update existing product
-      const productRef = doc(firestore, 'products', product.id);
-      updateDocumentNonBlocking(productRef, data);
-      toast({
-        title: 'Produit mis à jour',
-        description: `Le produit "${data.name}" a été mis à jour avec succès.`,
-      });
-    } else {
-      // Add new product
-      const productsRef = collection(firestore, 'products');
-      addDocumentNonBlocking(productsRef, data);
-      toast({
-        title: 'Produit ajouté',
-        description: `Le produit "${data.name}" a été ajouté avec succès.`,
-      });
-    }
-    setIsOpen(false);
+    onSave({ ...product, ...data, id: product?.id || '' }); // Pass full product data
   };
 
   return (

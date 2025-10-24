@@ -1,8 +1,8 @@
+
 'use client';
-import { useState } from 'react';
-import { collection } from 'firebase/firestore';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { useState, useEffect } from 'react';
 import type { Product } from '@/lib/products';
+import { staticProducts } from '@/lib/products-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -16,14 +16,24 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ProductDialog } from './product-dialog';
 import { DeleteProductDialog } from './delete-product-dialog';
+import { useToast } from '@/hooks/use-toast';
+
 
 export function AdminDashboard() {
-  const firestore = useFirestore();
-  const productsQuery = useMemoFirebase(() => collection(firestore, 'products'), [firestore]);
-  const { data: products, isLoading } = useCollection<Product>(productsQuery);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    // Simulating data fetch
+    setTimeout(() => {
+        setProducts(staticProducts);
+        setIsLoading(false);
+    }, 500);
+  }, []);
 
   const handleAddProduct = () => {
     setSelectedProduct(null);
@@ -39,6 +49,28 @@ export function AdminDashboard() {
     setSelectedProduct(product);
     setDeleteDialogOpen(true);
   };
+
+  // Functions to optimistically update UI
+  const addProductOptimistic = (product: Product) => {
+    const newProduct = { ...product, id: new Date().getTime().toString() }; // temp ID
+    setProducts(prev => [newProduct, ...prev]);
+    toast({ title: 'Produit ajouté', description: `Le produit "${product.name}" a été ajouté.` });
+    setDialogOpen(false);
+  }
+
+  const updateProductOptimistic = (product: Product) => {
+    setProducts(prev => prev.map(p => p.id === product.id ? product : p));
+    toast({ title: 'Produit mis à jour', description: `Le produit "${product.name}" a été mis à jour.` });
+    setDialogOpen(false);
+  }
+
+  const deleteProductOptimistic = (productId: string) => {
+    const productName = products.find(p => p.id === productId)?.name || '';
+    setProducts(prev => prev.filter(p => p.id !== productId));
+    toast({ title: 'Produit supprimé', description: `Le produit "${productName}" a été supprimé.`, variant: 'destructive'});
+    setDeleteDialogOpen(false);
+  }
+
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -118,12 +150,14 @@ export function AdminDashboard() {
         isOpen={dialogOpen}
         setIsOpen={setDialogOpen}
         product={selectedProduct}
+        onSave={selectedProduct ? updateProductOptimistic : addProductOptimistic}
       />
       {selectedProduct && (
         <DeleteProductDialog
             isOpen={deleteDialogOpen}
             setIsOpen={setDeleteDialogOpen}
             product={selectedProduct}
+            onDelete={() => deleteProductOptimistic(selectedProduct.id)}
         />
       )}
     </div>

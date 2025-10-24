@@ -1,12 +1,13 @@
+
 'use client';
 
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { AddToCartForm } from '@/components/add-to-cart-form';
-import { doc, collection } from 'firebase/firestore';
-import { useDoc, useFirestore, useMemoFirebase, useCollection } from '@/firebase';
 import { Product } from '@/lib/products';
+import { staticProducts } from '@/lib/products-data';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect, useState } from 'react';
 
 type ProductPageProps = {
   params: {
@@ -14,21 +15,19 @@ type ProductPageProps = {
   };
 };
 
-// This function is commented out as we're moving to dynamic rendering with client-side data fetching.
-// export async function generateStaticParams() {
-//   // This would require fetching all products at build time.
-//   // For a dynamic Firestore backend, it's better to handle this on-demand.
-//   return [];
-// }
-
 export default function ProductPage({ params }: ProductPageProps) {
-  const firestore = useFirestore();
+  const [product, setProduct] = useState<Product | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const productRef = useMemoFirebase(
-    () => (params.id ? doc(firestore, 'products', params.id) : null),
-    [firestore, params.id]
-  );
-  const { data: product, isLoading, error } = useDoc<Product>(productRef);
+  useEffect(() => {
+    // Simulating a data fetch
+    setTimeout(() => {
+      const foundProduct = staticProducts.find(p => p.id === params.id);
+      setProduct(foundProduct);
+      setIsLoading(false);
+    }, 500);
+  }, [params.id]);
+
 
   if (isLoading) {
     return (
@@ -48,7 +47,7 @@ export default function ProductPage({ params }: ProductPageProps) {
     );
   }
 
-  if (!product || error) {
+  if (!product) {
     notFound();
   }
 

@@ -1,18 +1,26 @@
+
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product-card';
 import placeholderData from '@/lib/placeholder-images.json';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection } from 'firebase/firestore';
+import { staticProducts } from '@/lib/products-data';
 import { Product } from '@/lib/products';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const firestore = useFirestore();
-  const productsQuery = useMemoFirebase(() => collection(firestore, 'products'), [firestore]);
-  const { data: products, isLoading } = useCollection<Product>(productsQuery);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulating a data fetch
+    setTimeout(() => {
+      setProducts(staticProducts);
+      setIsLoading(false);
+    }, 500);
+  }, []);
 
   const featuredProducts = products?.slice(0, 3) || [];
   const heroImage = placeholderData.placeholderImages.find(p => p.id === 'hero-image');

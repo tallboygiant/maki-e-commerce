@@ -1,14 +1,22 @@
+
 'use client';
 import { ProductCard } from '@/components/product-card';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { Product } from '@/lib/products';
-import { collection } from 'firebase/firestore';
+import { staticProducts } from '@/lib/products-data';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useState, useEffect } from 'react';
 
 export default function ProductsPage() {
-  const firestore = useFirestore();
-  const productsQuery = useMemoFirebase(() => collection(firestore, 'products'), [firestore]);
-  const { data: products, isLoading } = useCollection<Product>(productsQuery);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulating a data fetch
+    setTimeout(() => {
+      setProducts(staticProducts);
+      setIsLoading(false);
+    }, 500);
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">

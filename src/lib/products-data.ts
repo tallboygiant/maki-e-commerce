@@ -1,0 +1,77 @@
+
+import type { Product } from './products';
+
+export const staticProducts: Product[] = [
+    {
+        id: '1',
+        name: 'Amplificateur Audio',
+        description: 'Un amplificateur audio puissant pour une expérience sonore immersive.',
+        price: 250,
+        imageUrl: 'https://images.unsplash.com/photo-1673855082466-64ec19586c5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhdWRpbyUyMGFtcGxpZmllcnxlbnwwfHx8fDE3NjExMzU2MDh8MA&ixlib=rb-4.1.0&q=80&w=1080',
+        imageHint: 'audio amplifier',
+        stockQuantity: 15,
+    },
+    {
+        id: '2',
+        name: 'Guitare Acoustique',
+        description: 'Une guitare acoustique de haute qualité pour les musiciens de tous niveaux.',
+        price: 180,
+        imageUrl: 'https://images.unsplash.com/photo-1715431150006-1f03ea6e4a37?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8YWNvdXN0aWMlMjBndWl0YXJ8ZW58MHx8fHwxNzYxMDQ1Mzk1fDA&ixlib=rb-4.1.0&q=80&w=1080',
+        imageHint: 'acoustic guitar',
+        stockQuantity: 25,
+    },
+    {
+        id: '3',
+        name: 'Microphone de Studio',
+        description: 'Un microphone de studio professionnel pour des enregistrements clairs et nets.',
+        price: 120,
+        imageUrl: 'https://images.unsplash.com/photo-1674644651631-0a96c4bb9a3b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxzdHVkaW8lMjBtaWNyb3Bob25lfGVufDB8fHx8MTc2MTA0ODg2OHww&ixlib=rb-4.1.0&q=80&w=1080',
+        imageHint: 'studio microphone',
+        stockQuantity: 30,
+    },
+    {
+        id: '4',
+        name: 'Groupe Électrogène',
+        description: 'Un groupe électrogène portable pour une alimentation fiable en déplacement.',
+        price: 450,
+        imageUrl: 'https://images.unsplash.com/photo-1658260867231-535a1f7c98b9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxwb3dlciUyMGdlbmVyYXRvcnxlbnwwfHx8fDE3NjEwNDI5NzN8MA&ixlib=rb-4.1.0&q=80&w=1080',
+        imageHint: 'power generator',
+        stockQuantity: 10,
+    },
+    {
+        id: '5',
+        name: 'Ventilateur sur Pied',
+        description: 'Un ventilateur sur pied moderne pour vous garder au frais pendant les journées chaudes.',
+        price: 80,
+        imageUrl: 'https://images.unsplash.com/photo-1621507550092-332242e3295e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzdGFuZGluZyUyMGZhbnxlbnwwfHx8fDE3NjExMzU2MDl8MA&ixlib=rb-4.1.0&q=80&w=1080',
+        imageHint: 'standing fan',
+        stockQuantity: 40,
+    },
+    {
+        id: '6',
+        name: 'Coffre-fort Numérique',
+        description: 'Un coffre-fort numérique robuste pour protéger vos objets de valeur.',
+        price: 150,
+        imageUrl: 'https://images.unsplash.com/photo-1695654401292-2807ecb9383b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkaWdpdGFsJTIwc2FmZXxlbnwwfHx8fDE3NjExMzU2MDh8MA&ixlib=rb-4.1.0&q=80&w=1080',
+        imageHint: 'digital safe',
+        stockQuantity: 20,
+    },
+    {
+        id: '7',
+        name: 'Téléviseur Samsung',
+        description: 'Un téléviseur à écran plat Samsung pour une expérience de visionnage incroyable.',
+        price: 800,
+        imageUrl: 'https://images.unsplash.com/photo-1717295248521-4c1f2b6bcd6e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxmbGF0LXNjcmVlbiUyMHR2fGVufDB8fHx8MTc2MTEzNTYwOHww&ixlib=rb-4.1.0&q=80&w=1080',
+        imageHint: 'flat-screen tv',
+        stockQuantity: 12,
+    },
+    {
+        id: '8',
+        name: 'Téléviseur LG',
+        description: 'Un téléviseur à écran plat LG avec des couleurs vives et des noirs profonds.',
+        price: 750,
+        imageUrl: 'https://images.unsplash.com/photo-1461151304267-38535e780c79?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzbWFydCUyMHR2fGVufDB8fHx8MTc2MTExMzQwM3ww&ixlib=rb-4.1.0&q=80&w=1080',
+        imageHint: 'smart tv',
+        stockQuantity: 18,
+    }
+];

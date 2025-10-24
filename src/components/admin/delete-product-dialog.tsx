@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -10,30 +11,19 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { useFirestore, deleteDocumentNonBlocking } from '@/firebase';
 import { Product } from '@/lib/products';
-import { doc } from 'firebase/firestore';
-import { useToast } from '@/hooks/use-toast';
 
 interface DeleteProductDialogProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
   product: Product;
+  onDelete: () => void;
 }
 
-export function DeleteProductDialog({ isOpen, setIsOpen, product }: DeleteProductDialogProps) {
-  const firestore = useFirestore();
-  const { toast } = useToast();
+export function DeleteProductDialog({ isOpen, setIsOpen, product, onDelete }: DeleteProductDialogProps) {
 
   const handleDelete = () => {
-    const productRef = doc(firestore, 'products', product.id);
-    deleteDocumentNonBlocking(productRef);
-    setIsOpen(false);
-    toast({
-        title: 'Produit supprimé',
-        description: `Le produit "${product.name}" a été supprimé.`,
-        variant: 'destructive'
-    });
+    onDelete();
   };
 
   return (
@@ -42,7 +32,7 @@ export function DeleteProductDialog({ isOpen, setIsOpen, product }: DeleteProduc
         <AlertDialogHeader>
           <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer ce produit ?</AlertDialogTitle>
           <AlertDialogDescription>
-            Cette action est irréversible. Le produit "{product.name}" sera définitivement supprimé de la base de données.
+            Cette action est irréversible. Le produit "{product.name}" sera définitivement supprimé.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
