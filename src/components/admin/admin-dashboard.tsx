@@ -1,12 +1,12 @@
 
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import type { Product } from '@/lib/products';
 import { staticProducts } from '@/lib/products-data';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PlusCircle, MoreHorizontal, Loader2 } from 'lucide-react';
+import { PlusCircle, MoreHorizontal, Loader2, DollarSign, Package, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import {
   DropdownMenu,
@@ -34,6 +34,17 @@ export function AdminDashboard() {
         setIsLoading(false);
     }, 500);
   }, []);
+
+  const stats = useMemo(() => {
+    const totalStock = products.reduce((sum, p) => sum + p.stockQuantity, 0);
+    const stockValue = products.reduce((sum, p) => sum + (p.price * p.stockQuantity), 0);
+    // Sales are simulated for now
+    const totalSales = 125; 
+    const totalRevenue = 45231.89;
+
+    return { totalStock, stockValue, totalSales, totalRevenue };
+  }, [products]);
+
 
   const handleAddProduct = () => {
     setSelectedProduct(null);
@@ -73,7 +84,49 @@ export function AdminDashboard() {
 
 
   return (
-    <div className="container mx-auto px-4 py-12">
+    <div className="container mx-auto px-4 py-12 space-y-8">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Revenu Total</CardTitle>
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">${stats.totalRevenue.toLocaleString('fr-FR')}</div>
+                    <p className="text-xs text-muted-foreground">+20.1% depuis le mois dernier</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Ventes</CardTitle>
+                    <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">+{stats.totalSales}</div>
+                    <p className="text-xs text-muted-foreground">+180.1% depuis le mois dernier</p>
+                </CardContent>
+            </Card>
+             <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Valeur du Stock</CardTitle>
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">${stats.stockValue.toLocaleString('fr-FR')}</div>
+                    <p className="text-xs text-muted-foreground">Valeur actuelle de l'inventaire</p>
+                </CardContent>
+            </Card>
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                    <CardTitle className="text-sm font-medium">Articles en Stock</CardTitle>
+                    <Package className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                    <div className="text-2xl font-bold">{stats.totalStock}</div>
+                    <p className="text-xs text-muted-foreground">Total des articles en inventaire</p>
+                </CardContent>
+            </Card>
+        </div>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
